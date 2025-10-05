@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { insertMeasurement } from "@/lib/dbActions";
 import { useUser } from "@/contexts/UserContext";
 import { Modal } from "./Modal";
+import CallModal from "./CallModal";
+import { useModal } from "@/hooks/useModal";
 
 type SurveyFormProps = {
   questions: string[];
@@ -12,7 +14,7 @@ type SurveyFormProps = {
 const options = ["اصلا", "خیلی کم", "تا حدی", "زیاد", "خیلی زیاد"];
 
 const activationHours = [
-  { start: 10, end: 11 },
+  { start: 8, end: 11 },
   { start: 12, end: 13 },
   { start: 14, end: 15 },
   { start: 16, end: 18 },
@@ -57,6 +59,8 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ questions, onSubmit }) => {
     setExpandedBlocks((prev) => ({ ...prev, [blockIndex]: !prev[blockIndex] }));
   };
 
+  const { isOpen, openModal, closeModal } = useModal();
+
   return (
     <div className="p-4 space-y-6">
       {activationHours.map((hour, idx) => {
@@ -90,23 +94,20 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ questions, onSubmit }) => {
                 {questions.map((question, qIdx) => (
                   <div key={qIdx} className="space-y-3">
                     <p className="text-lg font-vazir text-center">{question}</p>
-                    <div className="flex flex-wrap justify-center gap-2">
-                      {options.map((option, oIdx) => {
-                        const selected = answers[qIdx] === oIdx;
-                        return (
-                          <button
-                            key={oIdx}
-                            onClick={() => handleSelect(qIdx, oIdx)}
-                            className={`px-4 py-2 rounded-md border text-sm transition-all ${
-                              selected
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-                            }`}
-                          >
-                            {option}
-                          </button>
-                        );
-                      })}
+                    <div className="flex flex-col mt-5 gap-3">
+                      {options.map((option, oIdx) => (
+                        <button
+                          key={oIdx}
+                          onClick={() => handleSelect(qIdx, oIdx)}
+                          className={`py-2 rounded-lg border border-gray-300 transition ${
+                            answers[qIdx] === oIdx
+                              ? "bg-blue-500 text-white"
+                              : "bg-white text-gray-800"
+                          }`}
+                        >
+                          {option}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -117,9 +118,7 @@ const SurveyForm: React.FC<SurveyFormProps> = ({ questions, onSubmit }) => {
       })}
 
       {/* مودال تماس */}
-      <Modal isOpen={isVisible} onClose={() => setIsVisible(false)}>
-        <div>Call Modal content here</div>
-      </Modal>
+      <CallModal isVisible={isVisible} onClose={() => setIsVisible(false)} />
     </div>
   );
 };

@@ -40,7 +40,7 @@ const Settings = () => {
       </div>
 
       <Modal isOpen={isOpen} onClose={closeModal}>
-        <div className="min-h-[50%] max-h-[80%] rounded-lg bg-white">
+        <div className="flex justify-center items-center bg-black/50 p-4 fixed inset-0 z-50">
           <SecureForm onSubmit={closeModal} />
         </div>
       </Modal>

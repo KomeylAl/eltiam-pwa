@@ -25,7 +25,7 @@ const BottomNav = () => {
   const pathname = usePathname();
 
   return (
-    <div className="w-full h-20 fixed bottom-0 px-4 py-3">
+    <div className="w-full h-20 fixed bottom-0 px-4 py-3 sm:hidden">
       <div className="w-full h-full rounded-full bg-[#469173] flex items-center justify-around p-4">
         {navIcons.map((nav) => (
           <Link key={nav.path} href={nav.path}>

@@ -51,7 +51,7 @@ export function useSyncWithServer() {
       // @ts-ignore
       const unsynced = await db[table].where("synced").equals(0).toArray();
       if (unsynced.length === 0) {
-        continue
+        continue;
       };
 
       try {
@@ -65,7 +65,7 @@ export function useSyncWithServer() {
           // @ts-ignore
           await db[table].where("synced").equals(0).modify({ synced: 1 });
           console.log(await res.json())
-          toast.success(`✅ Sync success for ${table}`);
+          // toast.success(`✅ Sync success for ${table}`);
         } else {
           allSyncedLocal = false;
           toast.error(`❌ Sync failed for ${table}`);
@@ -76,6 +76,8 @@ export function useSyncWithServer() {
         toast.error(`❌ Sync error for ${table}`);
       }
     }
+
+    if (allSynced) toast.success("تمامی اطلاعات همگام‌سازی شده اند.")
 
     setAllSynced(allSyncedLocal);
     setIsLoading(false);

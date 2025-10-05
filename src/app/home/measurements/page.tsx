@@ -11,19 +11,10 @@ import { Modal } from "@/components/Modal";
 
 const Measurement = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const flatListRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(false);
   const [showSecondModal, setShowSecondModal] = useState(false);
   const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    const checkFormStatus = async () => {
-      const isDone = isFirstTimeUser();
-      setShowModal(isDone);
-      setChecking(false);
-    };
-    checkFormStatus();
-  }, []);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const now = new Date();
   const date = convertDate(now);
@@ -36,11 +27,20 @@ const Measurement = () => {
     ).padStart(2, "0")}`;
     setSelectedDate(todayJalali);
 
-    // Scroll to the selected date element
+    // اسکرول به تاریخ امروز
     setTimeout(() => {
-      const element = document.getElementById(`date-${todayJalali}`);
-      element?.scrollIntoView({ behavior: "smooth", inline: "center" });
-    }, 100);
+      const el = document.getElementById(`date-${todayJalali}`);
+      el?.scrollIntoView({ behavior: "smooth", inline: "center" });
+    }, 300);
+  }, []);
+
+  useEffect(() => {
+    const checkFormStatus = async () => {
+      const isDone = isFirstTimeUser();
+      setShowModal(isDone);
+      setChecking(false);
+    };
+    checkFormStatus();
   }, []);
 
   if (checking) {
@@ -55,25 +55,24 @@ const Measurement = () => {
     <div className="bg-white min-h-screen text-black">
       {/* Header section */}
       <div className="w-full bg-[#469173] flex flex-col items-center justify-center py-12">
-        <h1 className="text-3xl text-white font-vazir-bold mb-4">سنجش</h1>
+        <h1 className="text-3xl text-white font-bold mb-4">سنجش</h1>
 
         <div
-          ref={flatListRef}
-          className="flex overflow-x-auto gap-3 px-4 w-full justify-center scrollbar-hide"
+          ref={listRef}
+          className="flex flex-row-reverse overflow-x-auto w-full px-4 mt-4 no-scrollbar"
         >
           {dates.map((item) => (
-            <button
+            <div
               key={item.date}
               id={`date-${item.date}`}
-              onClick={() => setSelectedDate(item.date)}
-              className={`rounded-lg border px-4 py-2 text-sm whitespace-nowrap transition-colors ${
+              className={`rounded-lg border mx-2 px-4 py-2 text-sm whitespace-nowrap transition-colors ${
                 item.date === selectedDate
                   ? "bg-white text-[#469173] border-white"
                   : "bg-transparent text-white border-white hover:bg-white/10"
               }`}
             >
               {item.date}
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -85,7 +84,7 @@ const Measurement = () => {
       </div>
 
       {/* Modal for first-time form */}
-      <Modal isOpen={showModal} onClose={() => {}}>
+      <Modal isOpen={showModal} onClose={() => {}} showCloseButton={false}>
         <div className="flex justify-center items-center bg-black/50 p-4 fixed inset-0 z-50">
           <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl text-right">
             <h3 className="text-lg font-vazir-bold mb-4">فرم اولیه</h3>
@@ -117,7 +116,7 @@ const Measurement = () => {
 
       {/* Modal for secure form */}
       <Modal isOpen={showSecondModal} onClose={() => setShowSecondModal(false)}>
-        <div className="min-h-[50%] max-h-[80%] bg-white rounded-lg p-6 overflow-y-auto">
+        <div className="flex justify-center items-center bg-black/50 p-4 fixed inset-0 z-50">
           <SecureForm onSubmit={() => setShowSecondModal(false)} />
         </div>
       </Modal>
